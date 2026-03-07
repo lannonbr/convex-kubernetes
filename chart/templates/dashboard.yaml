@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-convex-dashboard"
+  labels:
+    app: convex-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-convex-dashboard"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}-convex-dashboard"
+    spec:
+      containers:
+        - name: convex-dashboard
+          image: ghcr.io/get-convex/convex-dashboard:{{ .Values.convexSha }}
+          env:
+            - name: NEXT_PUBLIC_DEPLOYMENT_URL
+              value: "https://convex-backend.{{ .Values.tailnet }}.ts.net/"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-convex-dashboard"
+spec:
+  ports:
+    - port: 6791
+      targetPort: 6791
+      protocol: TCP
+  selector:
+    app: "{{ .Release.Name }}-convex-dashboard"

@@ -1,0 +1,71 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: convex-backend-ingress
+  labels:
+    app: ingress
+  annotations: {}
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: convex-backend
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{ .Release.Name }}-convex-backend"
+                port:
+                  number: 3210
+  tls:
+    - hosts:
+        - convex-backend
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: convex-site-ingress
+  labels:
+    app: ingress
+  annotations: {}
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: convex-site
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{ .Release.Name }}-convex-backend"
+                port:
+                  number: 3211
+  tls:
+    - hosts:
+        - convex-site
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: convex-dashboard-ingress
+  labels:
+    app: ingress
+  annotations: {}
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: convex-dashboard
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: "{{ .Release.Name }}-convex-dashboard"
+                port:
+                  number: 6791
+  tls:
+    - hosts:
+        - convex-dashboard

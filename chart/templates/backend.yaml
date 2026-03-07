@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}-convex-backend"
+  labels:
+    app: "{{ .Release.Name }}-convex-backend"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}-convex-backend"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}-convex-backend"
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/get-convex/convex-backend:{{ .Values.convexSha }}
+          env:
+            - name: INSTANCE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: convex-secrets
+                  key: INSTANCE_NAME
+            - name: INSTANCE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: convex-secrets
+                  key: INSTANCE_SECRET
+            - name: "CONVEX_CLOUD_ORIGIN"
+              value: "https://convex-backend.{{ .Values.tailnet }}.ts.net"
+            - name: "CONVEX_SITE_ORIGIN"
+              value: "https://convex-site.{{ .Values.tailnet }}.ts.net"
+            - name: "DOCUMENT_RETENTION_DELAY"
+              value: "172800"
+          volumeMounts:
+            - name: convex-data
+              mountPath: /convex/data
+      volumes:
+        - name: convex-data
+          hostPath:
+            path: "{{ required "hostBasePath must be set" .Values.hostBasePath }}/files/convex-data"
+            type: Directory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Release.Name }}-convex-backend"
+spec:
+  ports:
+    - port: 3210
+      targetPort: 3210
+      protocol: TCP
+      name: backend
+    - port: 3211
+      targetPort: 3211
+      protocol: TCP
+      name: proxy
+  selector:
+    app: "{{ .Release.Name }}-convex-backend"
