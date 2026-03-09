@@ -6,8 +6,11 @@ ingress:
   tls: true
   annotations: {}
   backend:
-    host: ""   # e.g. "convex-backend.my-tailnet.ts.net" or "api.example.com"
+    host: ""     # hostname for ingress routing (e.g. "convex-backend" for Tailscale, "api.example.com" for others)
+    origin: ""   # optional: full FQDN for env vars if different from host (e.g. "convex-backend.my-tailnet.ts.net")
   site:
-    host: ""   # e.g. "convex-site.my-tailnet.ts.net" or "site.example.com"
+    host: ""     # hostname for ingress routing (e.g. "convex-site" for Tailscale, "site.example.com" for others)
+    origin: ""   # optional: full FQDN for env vars if different from host
   dashboard:
-    host: ""   # e.g. "convex-dashboard.my-tailnet.ts.net" or "dashboard.example.com"
+    host: ""     # hostname for ingress routing (e.g. "convex-dashboard" for Tailscale, "dashboard.example.com" for others)
+    origin: ""   # optional: full FQDN for env vars if different from host
