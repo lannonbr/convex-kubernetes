@@ -19,7 +19,7 @@ spec:
           image: ghcr.io/get-convex/convex-dashboard:{{ .Values.convexSha }}
           env:
             - name: NEXT_PUBLIC_DEPLOYMENT_URL
-              value: "https://convex-backend.{{ .Values.tailnet }}.ts.net/"
+              value: {{ include "convex.backendOrigin" . | quote }}
 
 ---
 apiVersion: v1

@@ -29,9 +29,9 @@ spec:
                   name: convex-secrets
                   key: INSTANCE_SECRET
             - name: "CONVEX_CLOUD_ORIGIN"
-              value: "https://convex-backend.{{ .Values.tailnet }}.ts.net"
+              value: {{ include "convex.backendOrigin" . | quote }}
             - name: "CONVEX_SITE_ORIGIN"
-              value: "https://convex-site.{{ .Values.tailnet }}.ts.net"
+              value: {{ include "convex.siteOrigin" . | quote }}
             - name: "DOCUMENT_RETENTION_DELAY"
               value: "172800"
           volumeMounts:

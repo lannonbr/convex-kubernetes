@@ -4,11 +4,11 @@ metadata:
   name: convex-backend-ingress
   labels:
     app: ingress
-  annotations: {}
+  annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
-  ingressClassName: tailscale
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - host: convex-backend
+    - host: {{ required "ingress.backend.host must be set" .Values.ingress.backend.host }}
       http:
         paths:
           - path: /
@@ -18,9 +18,11 @@ spec:
                 name: "{{ .Release.Name }}-convex-backend"
                 port:
                   number: 3210
+  {{- if .Values.ingress.tls }}
   tls:
     - hosts:
-        - convex-backend
+        - {{ .Values.ingress.backend.host }}
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -28,11 +30,11 @@ metadata:
   name: convex-site-ingress
   labels:
     app: ingress
-  annotations: {}
+  annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
-  ingressClassName: tailscale
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - host: convex-site
+    - host: {{ required "ingress.site.host must be set" .Values.ingress.site.host }}
       http:
         paths:
           - path: /
@@ -42,9 +44,11 @@ spec:
                 name: "{{ .Release.Name }}-convex-backend"
                 port:
                   number: 3211
+  {{- if .Values.ingress.tls }}
   tls:
     - hosts:
-        - convex-site
+        - {{ .Values.ingress.site.host }}
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -52,11 +56,11 @@ metadata:
   name: convex-dashboard-ingress
   labels:
     app: ingress
-  annotations: {}
+  annotations: {{ toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
-  ingressClassName: tailscale
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - host: convex-dashboard
+    - host: {{ required "ingress.dashboard.host must be set" .Values.ingress.dashboard.host }}
       http:
         paths:
           - path: /
@@ -66,6 +70,8 @@ spec:
                 name: "{{ .Release.Name }}-convex-dashboard"
                 port:
                   number: 6791
+  {{- if .Values.ingress.tls }}
   tls:
     - hosts:
-        - convex-dashboard
+        - {{ .Values.ingress.dashboard.host }}
+  {{- end }}

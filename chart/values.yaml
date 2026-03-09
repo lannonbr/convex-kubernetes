@@ -1,3 +1,13 @@
 convexSha: 25d170103019e63d6a90602ca821c8c48e6713a5
-tailnet: ""
 hostBasePath: ""
+
+ingress:
+  className: "tailscale"
+  tls: true
+  annotations: {}
+  backend:
+    host: ""   # e.g. "convex-backend.my-tailnet.ts.net" or "api.example.com"
+  site:
+    host: ""   # e.g. "convex-site.my-tailnet.ts.net" or "site.example.com"
+  dashboard:
+    host: ""   # e.g. "convex-dashboard.my-tailnet.ts.net" or "dashboard.example.com"
